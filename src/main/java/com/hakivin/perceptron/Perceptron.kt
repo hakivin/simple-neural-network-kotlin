@@ -6,7 +6,7 @@ fun main() {
     val b = 0.0
     val learningRate = 1.0
     val threshold = 0.2
-    val epoch = 2
+    val epoch = 100
     val data = arrayOf(
             arrayOf(1,1,1,1),
             arrayOf(1,0,1,-1),
@@ -30,8 +30,8 @@ fun train(data : Array<Array<Int>>, weight1:Double, weight2:Double, bias:Double,
     var b = bias
     var flag = false
     val array = IntArray(data.size)
-    var iter = 0
-    while (!flag || iter <= epoch) {
+    var iter = 1
+    while (!flag && iter <= epoch) {
         for (i in data.indices) {
             val arr = data[i]
             val net = (arr[0] * w1) + (arr[1] * w2) + b
