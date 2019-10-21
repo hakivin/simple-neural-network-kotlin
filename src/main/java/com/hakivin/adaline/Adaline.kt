@@ -29,10 +29,10 @@ fun main(){
     var w0 = Math.random()/2
     var w1 = Math.random()/2
     var w2 = Math.random()/2
-    var b = 0.0
     val learningRate = 0.0001
     val tolerance = 0.001
     val epoch = 200
+    println("w0 = $w0, w1 = $w1, w2 = $w2")
 
     //train
     var flag = false
@@ -40,39 +40,33 @@ fun main(){
     var deltaw0 = 0.0
     var deltaw1 = 0.0
     var deltaw2 = 0.0
-    var deltab : Double
     while (!flag && iter <= epoch){
         for (i in dataTrain.indices){
             val arr = dataTrain[i]
             val target = targetTrain[i]
-            val net = w0*arr[0] + w1*arr[1] + w2*arr[2] + b
+            val net = w0*arr[0] + w1*arr[1] + w2*arr[2]
 
             //activation fun -> ReLU
-            val fnet = when {
-                net > 0 -> net
-                net < 0 -> 0.0
-                else -> net
-            }
+            val fnet = max(net,0.0)
 
             //calculate delta
             deltaw0 = learningRate * (target-fnet) * arr[0]
             deltaw1 = learningRate * (target-fnet) * arr[1]
             deltaw2 = learningRate * (target-fnet) * arr[2]
-            deltab = learningRate * target
 
             //update weight
             w0 += deltaw0
             w1 += deltaw1
             w2 += deltaw2
-            b += deltab
             if (iter % 10 == 0) {
                 println("epoch $iter")
-                println("fnet = $fnet, target = $target, w0 = $w0, w1 = $w1, w2 = $w2, b = $b, deltaw0 = $deltaw0, deltaw1 = $deltaw1, deltaw2 = $deltaw2, deltab = $deltab")
+                println("fnet = $fnet, target = $target, w0 = $w0, w1 = $w1, w2 = $w2, deltaw0 = $deltaw0, deltaw1 = $deltaw1, deltaw2 = $deltaw2")
             }
             iter++
         }
-        if (max(deltaw0, max(deltaw1, deltaw2)) < tolerance)
+        if (max(deltaw0, max(deltaw1, deltaw2)) < tolerance) {
             flag = true
+        }
     }
 
     //Test
@@ -83,7 +77,7 @@ fun main(){
         val x1 = arr[1]
         val x2 = arr[2]
         val target = targetTest[j]
-        val fnet = w0*x0 + w1*x1 + w2*x2 + b
-        println("fnet = $fnet, target = $target, error = ${(target - fnet)/target*100}")
+        val fnet = w0*x0 + w1*x1 + w2*x2
+        println("fnet = $fnet, target = $target, error = ${(target - fnet)/target*100} %")
     }
 }
